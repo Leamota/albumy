@@ -4,6 +4,7 @@
             <a href="{{ url_for('user.index', username=current_user.username) }}">
                 <img class="rounded avatar-s" style="margin-left: 15px; position: absolute"
                      src="{{ url_for('main.get_avatar', filename=current_user.avatar_m) }}">
+                     alt="{{ photo.alt_text or 'Image' }}"
             </a>
             <div class="sidebar-nav-name">
                 <h6 class="card-title"><a

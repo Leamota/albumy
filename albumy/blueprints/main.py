@@ -11,7 +11,7 @@ from flask import render_template, flash, redirect, url_for, current_app, \
     send_from_directory, request, abort, Blueprint
 from flask_login import login_required, current_user
 from sqlalchemy.sql.expression import func
-
+from albumy.ml import generate_alt_text, detect_objects
 from albumy.decorators import confirm_required, permission_required
 from albumy.extensions import db
 from albumy.forms.main import DescriptionForm, TagForm, CommentForm
@@ -133,7 +133,26 @@ def upload():
         )
         db.session.add(photo)
         db.session.commit()
+
+	# ----- ML Integration -----
+        # Alt text if not provided
+        if not request.form.get('description'):
+            photo.alt_text = generate_alt_text(photo.path)
+
+        # Object detection → tags
+        objects = detect_objects(photo.path)
+        for obj in objects:
+            tag = Tag.query.filter_by(name=obj).first()
+            if not tag:
+                tag = Tag(name=obj)
+                db.session.add(tag)
+            photo.tags.append(tag)
+
+        db.session.commit()
+        flash('Photo uploaded and analyzed!', 'success')
+
     return render_template('main/upload.html')
+    
 
 
 @main_bp.route('/photo/<int:photo_id>')
@@ -399,3 +418,5 @@ def delete_tag(photo_id, tag_id):
 
     flash('Tag deleted.', 'info')
     return redirect(url_for('.show_photo', photo_id=photo_id))
+
+

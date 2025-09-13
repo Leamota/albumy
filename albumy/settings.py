@@ -25,7 +25,7 @@ class Operations:
 
 
 class BaseConfig:
-    ALBUMY_ADMIN_EMAIL = os.getenv('ALBUMY_ADMIN', 'admin@helloflask.com')
+    ALBUMY_ADMIN_EMAIL = os.getenv('ALBUMY_ADMIN', 'admin@aiandml.com')
     ALBUMY_PHOTO_PER_PAGE = 12
     ALBUMY_COMMENT_PER_PAGE = 15
     ALBUMY_NOTIFICATION_PER_PAGE = 20

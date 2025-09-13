@@ -7,9 +7,9 @@
 {% block content %}
 {% if current_user.is_authenticated %}
     <div class="row justify-content-md-center">
-        <div class="col-md-8">
-            {% if photos %}
-                {% for photo in photos %}
+        {% if photos %}
+            {% for photo in photos %}
+                <div class="col-md-8">
                     <div class="card mb-3 w-100 bg-light">
                         <div class="card-header">
                             <a class="dead-link" href="{{ url_for('user.index', username=photo.author.username) }}">
@@ -21,16 +21,18 @@
                                data-href="{{ url_for('ajax.get_profile', user_id=photo.author.id) }}"
                                href="{{ url_for('user.index', username=photo.author.username) }}">{{ photo.author.name }}</a>
                             <span class="float-right">
-                <small data-toggle="tooltip" data-placement="top" data-timestamp="{{ photo.timestamp }}"
-                       data-delay="500">
-                    {{ moment(photo.timestamp).fromNow(refresh=True) }}</small></span>
+                                <small data-toggle="tooltip" data-placement="top" data-timestamp="{{ photo.timestamp }}"
+                                       data-delay="500">
+                                    {{ moment(photo.timestamp).fromNow(refresh=True) }}</small>
+                            </span>
                         </div>
                         <div class="card-body">
                             <div class="" align="center">
                                 <a class="thumbnail" href="{{ url_for('.show_photo', photo_id=photo.id) }}"
                                    target="_blank">
                                     <img class="img-fluid"
-                                         src="{{ url_for('.get_image', filename=photo.filename_m) }}">
+                                         src="{{ url_for('.get_image', filename=photo.filename_m) }}"
+                                         alt="{{ photo.alt_text or 'Image' }}">
                                 </a>
                             </div>
                         </div>
@@ -70,17 +72,17 @@
                             {% endif %}
                         </div>
                     </div>
-                {% endfor %}
-            {% else %}
-                <div class="tip text-center">
-                    <h3>No trends.</h3>
-                    <p><a href="{{ url_for('.explore') }}">Explore</a></p>
                 </div>
-            {% endif %}
-        </div>
-        <div class="col-md-3">
-            {% include 'main/_sidebar.html' %}
-        </div>
+                <div class="col-md-3">
+                    {% include 'main/_sidebar.html' %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="tip text-center">
+                <h3>No trends.</h3>
+                <p><a href="{{ url_for('.explore') }}">Explore</a></p>
+            </div>
+        {% endif %}
     </div>
     {% if photos %}
         {{ render_pagination(pagination, align='center') }}
@@ -89,7 +91,7 @@
     <div class="jumbotron">
         <div class="row">
             <div class="col-md-8">
-                <img src="{{ url_for('static', filename='images/index.jpg') }}" class="rounded img-fluid">
+                <img src="{{ url_for('static', filename='images/index.jpg') }}" class="rounded img-fluid" alt="Image">
             </div>
             <div class="col-md-4 align-self-center">
                 <h1>Albumy</h1>
@@ -100,3 +102,4 @@
     </div>
 {% endif %}
 {% endblock %}
+
